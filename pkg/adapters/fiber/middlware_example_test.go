@@ -9,7 +9,16 @@ func Example() {
 			// customize resource extractor if required
 			// method_path by default
 			WithResourceExtractor(func(ctx *fiber.Ctx) string {
-				return ctx.GetReqHeaders()["X-Real-IP"]
+				headers := ctx.GetReqHeaders()
+				ipValues, exists := headers["X-Real-IP"]
+				var ip string
+				if exists && len(ipValues) > 0 {
+					ip = ipValues[0] // 获取第一个IP值
+				} else {
+					// 如果不存在或没有值，则可以设置默认值或者处理逻辑
+					ip = "default-ip" // 示例中的默认值
+				}
+				return ip
 			}),
 			// customize block fallback if required
 			// abort with status 429 by default
